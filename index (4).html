@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>Postulá tu CV — Fabric Group</title>
+<style>
+  :root {
+    --accent: #221E1D;
+    --accent-light: #E9E7E1;
+    --sand: #D4D2C6;
+    --paper: #F6F4EE;
+    --gray-200: #E4E1D8;
+    --gray-400: #9C978C;
+    --white: #FFFFFF;
+    --green: #5F7F5F;
+    --green-bg: #EAF0E7;
+    --coral: #B26A57;
+    --coral-bg: #F5E9E3;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(20,22,26,0.06), 0 1px 2px rgba(20,22,26,0.05);
+    --shadow-lg: 0 14px 40px rgba(20,22,26,0.16);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  html, body {
+    margin: 0; padding: 0; min-height: 100%; width: 100%; overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--paper); color: var(--accent);
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 32px 16px 60px; width: 100%; }
+  .logo { text-align: center; margin-bottom: 22px; }
+  .logo img { height: 44px; width: auto; }
+  .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 26px 20px; }
+  @media (min-width: 420px) { .card { padding: 32px 30px; } }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); text-align: center; margin-bottom: 6px; }
+  h1 { font-size: 22px; font-weight: 800; text-align: center; margin: 0 0 6px; letter-spacing: -.01em; }
+  .puesto-pill { display: block; text-align: center; margin: 0 0 18px; }
+  .puesto-pill span { display: inline-block; background: var(--accent-light); color: var(--accent); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+  .detalle-busqueda-box {
+    background: var(--paper); border: 1px solid var(--gray-200); border-radius: 10px;
+    padding: 14px 16px; font-size: 13px; color: #3F3B37; line-height: 1.6; margin: 10px 0 20px;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .btn-ver-detalle {
+    display: block; width: 100%; text-align: center; background: var(--paper); border: 1px solid var(--gray-200);
+    border-radius: 9px; padding: 12px 10px; font-size: 13.5px; font-weight: 700; color: var(--accent);
+    cursor: pointer; margin: -8px 0 16px; transition: background .15s, border-color .15s; min-height: 44px;
+    -webkit-appearance: none; appearance: none;
+  }
+  .btn-ver-detalle:hover { background: var(--accent-light); border-color: var(--accent); }
+  .desc { font-size: 13.5px; color: #5A564D; text-align: center; margin: 0 0 26px; line-height: 1.5; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .field label { font-size: 12.5px; font-weight: 700; color: var(--accent); }
+  .field input, .field textarea, .field select {
+    padding: 12px 13px; border-radius: 9px; border: 1px solid var(--gray-200); background: var(--paper);
+    font-size: 16px; font-family: inherit; outline: none; transition: border-color .15s;
+    -webkit-appearance: none; appearance: none; width: 100%; min-height: 46px;
+  }
+  .field textarea { min-height: 80px; height: auto; resize: vertical; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); background: var(--white); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 380px) { .row2 { grid-template-columns: 1fr; } }
+  .file-drop {
+    border: 2px dashed var(--gray-200); border-radius: 10px; padding: 20px; text-align: center;
+    font-size: 13.5px; color: var(--gray-400); cursor: pointer; transition: border-color .15s;
+    display: block; min-height: 44px;
+  }
+  .file-drop:hover { border-color: var(--accent); color: var(--accent); }
+  .file-drop.has-file { border-color: var(--green); color: var(--green); border-style: solid; background: var(--green-bg); }
+  input[type=file] {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .btn-submit {
+    width: 100%; margin-top: 6px; border: none; border-radius: 10px; padding: 15px; font-size: 15px; font-weight: 700;
+    background: var(--accent); color: var(--white); cursor: pointer; transition: background .15s, transform .08s;
+    min-height: 48px; -webkit-appearance: none; appearance: none;
+  }
+  .btn-submit:hover { background: #3A342F; }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { opacity: .6; cursor: default; }
+  .note { font-size: 11.5px; color: var(--gray-400); text-align: center; margin-top: 14px; line-height: 1.5; }
+  .error-msg { background: var(--coral-bg); color: #8C4433; border-radius: 8px; padding: 10px 12px; font-size: 12.5px; margin-bottom: 14px; display: none; }
+  .success-view { text-align: center; padding: 20px 0; }
+  .success-view .check { font-size: 40px; margin-bottom: 12px; }
+  .success-view h2 { font-size: 19px; margin: 0 0 8px; }
+  .success-view p { font-size: 13.5px; color: #5A564D; line-height: 1.6; }
+  .spinner {
+    width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff;
+    border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><img src="data:image/png;base64,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" alt="Fabric Group"></div>
+  <div class="card">
+    <div class="eyebrow">Recursos Humanos</div>
+    <h1 id="tituloForm">Postulá tu CV</h1>
+    <div class="puesto-pill" id="puestoPillWrap" style="display:none;"><span id="puestoPillText"></span></div>
+    <p class="desc" id="descForm">Completá tus datos y adjuntá tu CV en PDF. Lo vamos a sumar a nuestra base de candidatos.</p>
+
+    <div id="formView">
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="row2">
+        <div class="field"><label>Nombre *</label><input type="text" id="pNombre"></div>
+        <div class="field"><label>Apellido *</label><input type="text" id="pApellido"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Email</label><input type="email" id="pEmail"></div>
+        <div class="field"><label>Teléfono</label><input type="text" id="pTelefono"></div>
+      </div>
+      <div class="field" id="puestoFieldWrap">
+        <label>Puesto de interés</label>
+        <select id="pPuestoSelect">
+          <option value="">Cargando búsquedas abiertas…</option>
+        </select>
+      </div>
+      <button type="button" class="btn-ver-detalle" id="btnVerDetalle" style="display:none;">Ver detalle de la búsqueda</button>
+      <div class="detalle-busqueda-box" id="detalleBusquedaBox" style="display:none;"></div>
+      <div class="field">
+        <label>Mensaje (opcional)</label>
+        <textarea id="pMensaje" placeholder="Contanos brevemente tu experiencia o por qué te interesa la posición"></textarea>
+      </div>
+      <div class="field">
+        <label>CV (PDF) *</label>
+        <label class="file-drop" id="fileDropZone" for="cvFile">Tocá para seleccionar tu CV en PDF</label>
+        <input type="file" id="cvFile" accept="application/pdf,.pdf">
+      </div>
+      <button class="btn-submit" id="btnSubmit">Enviar postulación</button>
+      <p class="note">Tus datos y tu CV se guardan de forma confidencial y solo son utilizados por el equipo de Recursos Humanos de Fabric Group para evaluar tu candidatura.</p>
+    </div>
+
+    <div id="successView" class="success-view" style="display:none;">
+      <div class="check">✓</div>
+      <h2>¡Postulación enviada!</h2>
+      <p>Gracias por tu interés. Recibimos tu CV correctamente y nuestro equipo de Recursos Humanos lo va a revisar. Si tu perfil calza con alguna búsqueda, nos vamos a poner en contacto.</p>
+    </div>
+  </div>
+</div>
+<div id="buildMarker" style="text-align:center; font-size:10px; color:#B0AA9C; font-family:monospace; padding: 10px 0 0;">Landing build: chunked-jsonp-v1 [1-HTML cargado, esperando JS]</div>
+<script>document.getElementById('buildMarker').textContent = 'Landing build: chunked-jsonp-v1 [2-JS ejecutando, esperando DOMContentLoaded]';</script>
+
+<script>
+// ======================================================================
+// CONFIGURACIÓN — completar una sola vez
+// ======================================================================
+// Pegá acá la URL /exec de tu proyecto de Apps Script de postulación
+// (la misma que te devuelve la función "obtenerMiURL" desde el editor).
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6XwgUO-tBo3hjkGIH6nmQs4Wo4yRRIfWCgfT4DzAgwOTYqrfXkHI1nM93jl0bsYVVoA/exec';
+
+const params = new URLSearchParams(window.location.search);
+const busquedaId = params.get('busqueda') || '';
+let pendingCVBase64 = null, pendingCVFileName = null, pendingCVMime = null;
+let detalleActual = '';
+
+/**
+ * Pide datos al backend usando JSONP (una etiqueta <script> normal, no
+ * fetch). Esta técnica NO pasa por CORS en absoluto — es la forma más
+ * vieja y más compatible que existe para pedir datos a otro dominio, y
+ * funciona igual en cualquier navegador de PC o celular.
+ */
+function apiGet(action, extraParams) {
+  return new Promise((resolve, reject) => {
+    const nombreCallback = 'jsonpCb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    const url = new URL(APPS_SCRIPT_URL);
+    url.searchParams.set('action', action);
+    Object.keys(extraParams || {}).forEach(k => url.searchParams.set(k, extraParams[k]));
+    url.searchParams.set('callback', nombreCallback);
+
+    const script = document.createElement('script');
+    let resuelto = false;
+
+    const limpiar = () => {
+      delete window[nombreCallback];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(temporizador);
+    };
+
+    window[nombreCallback] = (datos) => {
+      resuelto = true;
+      limpiar();
+      resolve(datos);
+    };
+
+    const temporizador = setTimeout(() => {
+      if (!resuelto) {
+        limpiar();
+        reject(new Error('El backend no respondió a tiempo. Verificá la URL configurada y que el proyecto de Apps Script esté implementado.'));
+      }
+    }, 15000);
+
+    script.onerror = () => {
+      if (!resuelto) {
+        limpiar();
+        reject(new Error('No se pudo conectar con el backend (revisá la URL configurada).'));
+      }
+    };
+
+    script.src = url.toString();
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * Envía la postulación con un formulario real apuntado a un iframe oculto
+ * (dispara el envío, sin leer su respuesta directa). El resultado se
+ * confirma aparte, con JSONP (ver función apiGet más arriba), reintentando
+ * cada par de segundos hasta que el backend confirma que terminó.
+ */
+/** Genera un identificador simple, único, para relacionar el envío del formulario con la consulta posterior del resultado. */
+function generarIdUnico() {
+  return 'sub_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+}
+
+/** Espera N milisegundos (para pausar entre consultas de "¿ya está listo?"). */
+function esperar(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Envía la postulación con un formulario real apuntado a un iframe
+ * oculto (dispara el envío, sin depender de leer su respuesta directa —
+ * eso no es confiable por cómo Apps Script aísla su contenido). En vez de
+ * eso, consultamos el resultado por separado con JSONP (la misma técnica
+ * ya confirmada que funciona para traer las búsquedas), reintentando cada
+ * par de segundos hasta que el resultado esté listo.
+ */
+/**
+ * Sube el CV en PDF (en base64) al backend, en pedacitos chicos, todos por
+ * pedidos GET/JSONP — el mismo mecanismo que ya usamos para traer las
+ * búsquedas, y confirmado que funciona en cualquier navegador de cualquier
+ * celular. Nunca se usa POST, iframe, ni formulario para nada.
+ */
+async function subirArchivoPorPartes(submissionId, base64Data, onProgreso) {
+  const TAMANIO_CHUNK = 4000;
+  const totalChunks = Math.max(Math.ceil(base64Data.length / TAMANIO_CHUNK), 1);
+  const CONCURRENCIA = 4; // subir varios pedacitos en paralelo, para que no tarde tanto
+
+  let siguienteIndice = 0;
+  let completados = 0;
+
+  async function subirUno(indice) {
+    const inicio = indice * TAMANIO_CHUNK;
+    const chunk = base64Data.slice(inicio, inicio + TAMANIO_CHUNK);
+    // Reintenta un par de veces si un pedacito puntual falla, antes de rendirse.
+    for (let intento = 0; intento < 3; intento++) {
+      try {
+        await apiGet('subirChunk', { submissionId: submissionId, chunkIndex: indice, chunkData: chunk });
+        return;
+      } catch (err) {
+        if (intento === 2) throw err;
+        await esperar(500);
+      }
+    }
+  }
+
+  async function trabajador() {
+    while (siguienteIndice < totalChunks) {
+      const indice = siguienteIndice++;
+      await subirUno(indice);
+      completados++;
+      if (onProgreso) onProgreso(completados, totalChunks);
+    }
+  }
+
+  const trabajadores = [];
+  for (let i = 0; i < CONCURRENCIA; i++) trabajadores.push(trabajador());
+  await Promise.all(trabajadores);
+
+  return totalChunks;
+}
+
+async function apiPost(action, payload) {
+  const submissionId = generarIdUnico();
+
+  const totalChunks = await subirArchivoPorPartes(submissionId, payload.base64Data, (hechos, total) => {
+    const btn = document.getElementById('btnSubmit');
+    const porcentaje = Math.round((hechos / total) * 100);
+    btn.innerHTML = '<span class="spinner"></span> Subiendo tu CV... ' + porcentaje + '%';
+  });
+
+  const datosJson = JSON.stringify({
+    Nombre: payload.data.Nombre,
+    Apellido: payload.data.Apellido,
+    Email: payload.data.Email,
+    Telefono: payload.data.Telefono,
+    Mensaje: payload.data.Mensaje
+  });
+
+  document.getElementById('btnSubmit').innerHTML = '<span class="spinner"></span> Confirmando...';
+
+  const resultado = await apiGet('finalizarPostulacion', {
+    submissionId: submissionId,
+    totalChunks: totalChunks,
+    busquedaId: payload.busquedaId || '',
+    fileName: payload.fileName || 'CV.pdf',
+    mimeType: payload.mimeType || 'application/pdf',
+    datosJson: datosJson
+  });
+
+  return resultado;
+}
+
+function escapeHtmlLocal(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function actualizarDetalleDisponible(detalle) {
+  detalleActual = (detalle && detalle.trim()) ? detalle : '';
+  const btn = document.getElementById('btnVerDetalle');
+  const box = document.getElementById('detalleBusquedaBox');
+  box.style.display = 'none';
+  box.textContent = '';
+  btn.textContent = 'Ver detalle de la búsqueda';
+  btn.style.display = detalleActual ? 'block' : 'none';
+}
+
+function toggleDetalleBusqueda() {
+  const box = document.getElementById('detalleBusquedaBox');
+  const btn = document.getElementById('btnVerDetalle');
+  const abierto = box.style.display === 'block';
+  if (abierto) {
+    box.style.display = 'none';
+    btn.textContent = 'Ver detalle de la búsqueda';
+  } else {
+    box.textContent = detalleActual;
+    box.style.display = 'block';
+    btn.textContent = 'Ocultar detalle de la búsqueda';
+  }
+}
+
+async function onCambioPuestoSeleccionado() {
+  const select = document.getElementById('pPuestoSelect');
+  const idElegido = select.value;
+  if (!idElegido) {
+    actualizarDetalleDisponible('');
+    return;
+  }
+  try {
+    const b = await apiGet('getBusquedaPublica', { id: idElegido });
+    actualizarDetalleDisponible(b ? b.Detalle : '');
+  } catch (err) {
+    actualizarDetalleDisponible('');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const marker = document.getElementById('buildMarker');
+  try {
+    marker.textContent = 'Landing build: chunked-jsonp-v1 [3-DOMContentLoaded disparado]';
+
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PEGAR_AQUI') !== -1) {
+      marker.textContent = 'Landing build: chunked-jsonp-v1 [ERROR: falta configurar APPS_SCRIPT_URL]';
+      marker.style.color = '#B26A57';
+      document.getElementById('errorMsg').textContent = 'Esta página todavía no está configurada (falta la URL del backend). Avisá al equipo de RRHH.';
+      document.getElementById('errorMsg').style.display = 'block';
+      document.getElementById('btnSubmit').disabled = true;
+      return;
+    }
+
+    marker.textContent = 'Landing build: chunked-jsonp-v1 [4-URL configurada OK, consultando versión del backend]';
+
+    // Diagnóstico visible: confirma si la Web App publicada responde bien y
+    // qué versión de código tiene desplegada en este momento.
+    try {
+      const v = await apiGet('version', {});
+      marker.textContent = 'Landing build: chunked-jsonp-v1 · Backend conectado — versión: ' + (v && v.version ? v.version : '(desconocida)');
+    } catch (err) {
+      marker.textContent = 'Landing build: chunked-jsonp-v1 · No se pudo conectar con el backend: ' + err.message;
+      marker.style.color = '#B26A57';
+    }
+
+    if (busquedaId) {
+      try {
+        const b = await apiGet('getBusquedaPublica', { id: busquedaId });
+        if (b) {
+          document.getElementById('puestoPillWrap').style.display = 'block';
+          document.getElementById('puestoPillText').textContent = b.Puesto + (b.Area ? ' · ' + b.Area : '');
+          document.getElementById('puestoFieldWrap').style.display = 'none';
+          document.getElementById('descForm').textContent = 'Estás postulando para esta búsqueda puntual. Completá tus datos y adjuntá tu CV en PDF.';
+          actualizarDetalleDisponible(b.Detalle);
+        }
+      } catch (err) { /* si falla, seguimos mostrando el formulario genérico */ }
+    } else {
+      try {
+        const abiertas = await apiGet('getBusquedasAbiertasPublico', {});
+        const select = document.getElementById('pPuestoSelect');
+        const opciones = ['<option value="">Postulación general (sin puesto específico)</option>']
+          .concat((abiertas || []).map(b =>
+            `<option value="${b.ID}">${escapeHtmlLocal(b.Puesto)}${b.Area ? ' · ' + escapeHtmlLocal(b.Area) : ''}</option>`
+          ));
+        select.innerHTML = opciones.join('');
+        select.addEventListener('change', onCambioPuestoSeleccionado);
+        marker.textContent += ' · Búsquedas abiertas encontradas: ' + ((abiertas && abiertas.length) || 0);
+      } catch (err) {
+        const select = document.getElementById('pPuestoSelect');
+        select.innerHTML = '<option value="">Postulación general (sin puesto específico)</option>';
+        marker.textContent += ' · Error al cargar búsquedas: ' + err.message;
+        marker.style.color = '#B26A57';
+      }
+    }
+
+    document.getElementById('btnVerDetalle').addEventListener('click', toggleDetalleBusqueda);
+
+    document.getElementById('cvFile').addEventListener('change', function () {
+      const file = this.files[0];
+      if (!file) return;
+      const zone = document.getElementById('fileDropZone');
+      const reader = new FileReader();
+      reader.onload = () => {
+        pendingCVBase64 = reader.result;
+        pendingCVFileName = file.name;
+        pendingCVMime = file.type || 'application/pdf';
+        zone.textContent = 'Listo: ' + file.name;
+        zone.classList.add('has-file');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('btnSubmit').addEventListener('click', submitForm);
+  } catch (errGeneral) {
+    marker.textContent = 'Landing build: chunked-jsonp-v1 [ERROR INESPERADO]: ' + errGeneral.message;
+    marker.style.color = '#B26A57';
+  }
+});
+
+async function submitForm() {
+  const errorEl = document.getElementById('errorMsg');
+  errorEl.style.display = 'none';
+
+  const puestoSelect = document.getElementById('pPuestoSelect');
+  const busquedaElegida = (puestoSelect && !busquedaId) ? puestoSelect.value : '';
+  const busquedaAEnviar = busquedaId || busquedaElegida;
+
+  const data = {
+    Nombre: document.getElementById('pNombre').value.trim(),
+    Apellido: document.getElementById('pApellido').value.trim(),
+    Email: document.getElementById('pEmail').value.trim(),
+    Telefono: document.getElementById('pTelefono').value.trim(),
+    Mensaje: document.getElementById('pMensaje').value.trim()
+  };
+
+  if (!data.Nombre || !data.Apellido) {
+    errorEl.textContent = 'Completá al menos tu nombre y apellido.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (!pendingCVBase64) {
+    errorEl.textContent = 'Adjuntá tu CV en PDF antes de enviar.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+  try {
+    const res = await apiPost('postularExterno', {
+      busquedaId: busquedaAEnviar,
+      data: data,
+      base64Data: pendingCVBase64,
+      fileName: pendingCVFileName,
+      mimeType: pendingCVMime
+    });
+    if (res && res.ok) {
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').style.display = 'block';
+    } else {
+      errorEl.textContent = (res && res.error) ? res.error : 'No pudimos enviar tu postulación. Probá de nuevo.';
+      errorEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enviar postulación';
+    }
+  } catch (err) {
+    errorEl.textContent = 'Error al enviar: ' + (err.message || err);
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enviar postulación';
+  }
+}
+</script>
+</body>
+</html>
