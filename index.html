@@ -436,6 +436,15 @@
 
             <div class="error-msg" id="formError"></div>
 
+            <div class="field" id="fieldPuestoDeseado" style="display:none;">
+              <label>Puesto de tu interés *</label>
+              <select id="selectPuestoDeseado">
+                <option value="">Seleccioná un puesto</option>
+                <option value="__otro__">Otro</option>
+              </select>
+              <input type="text" id="inputPuestoOtro" placeholder="Contanos qué puesto te interesa" style="display:none; margin-top:10px;">
+            </div>
+
             <div class="field">
               <label>Mensaje (opcional)</label>
               <textarea id="formMensaje" placeholder="Contanos brevemente por qué te interesa esta posición"></textarea>
@@ -1042,6 +1051,11 @@ async function mostrarVistaFormulario(busqueda) {
   document.getElementById('fileDropZone').classList.remove('has-file');
   pendingCVBase64 = null; pendingCVFileName = null; pendingCVMime = null;
 
+  const campoPuesto = document.getElementById('fieldPuestoDeseado');
+  document.getElementById('selectPuestoDeseado').value = '';
+  document.getElementById('inputPuestoOtro').style.display = 'none';
+  document.getElementById('inputPuestoOtro').value = '';
+
   const btnVolver = document.getElementById('btnVolverBusquedas');
   const pillWrap = document.getElementById('puestoPillWrap');
 
@@ -1051,6 +1065,7 @@ async function mostrarVistaFormulario(busqueda) {
     pillWrap.style.display = 'block';
     document.getElementById('puestoPillText').textContent = busqueda.Puesto + (busqueda.Area ? ' · ' + busqueda.Area : '');
     btnVolver.style.display = 'inline-block';
+    campoPuesto.style.display = 'none';
 
     try {
       const b = await apiGet('getBusquedaPublica', { id: busqueda.ID });
@@ -1064,8 +1079,40 @@ async function mostrarVistaFormulario(busqueda) {
     pillWrap.style.display = 'none';
     btnVolver.style.display = 'none';
     actualizarDetalleDisponible('');
+    campoPuesto.style.display = 'block';
+    cargarPuestosParaSelect();
   }
 }
+
+let puestosCache = null;
+async function cargarPuestosParaSelect() {
+  const select = document.getElementById('selectPuestoDeseado');
+  if (puestosCache) return; // ya cargados en esta sesión
+  try {
+    const puestos = await apiGet('getPuestosPublico', {});
+    puestosCache = Array.isArray(puestos) ? puestos : [];
+    const otroOption = select.querySelector('option[value="__otro__"]');
+    puestosCache.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = p;
+      select.insertBefore(opt, otroOption);
+    });
+  } catch (err) {
+    puestosCache = [];
+  }
+}
+
+document.getElementById('selectPuestoDeseado').addEventListener('change', function () {
+  const inputOtro = document.getElementById('inputPuestoOtro');
+  if (this.value === '__otro__') {
+    inputOtro.style.display = 'block';
+    inputOtro.focus();
+  } else {
+    inputOtro.style.display = 'none';
+    inputOtro.value = '';
+  }
+});
 
 document.getElementById('btnVolverBusquedas').addEventListener('click', () => mostrarVistaBusquedas());
 document.getElementById('btnVolverAlInicio').addEventListener('click', () => mostrarVistaBusquedas());
@@ -1113,6 +1160,26 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
   const errorEl = document.getElementById('formError');
   errorEl.style.display = 'none';
 
+  let puestoDeseadoValue = '';
+  if (!busquedaSeleccionada) {
+    const select = document.getElementById('selectPuestoDeseado');
+    const inputOtro = document.getElementById('inputPuestoOtro');
+    if (select.value === '__otro__') {
+      puestoDeseadoValue = inputOtro.value.trim();
+      if (!puestoDeseadoValue) {
+        errorEl.textContent = 'Contanos qué puesto te interesa.';
+        errorEl.style.display = 'block';
+        return;
+      }
+    } else if (select.value) {
+      puestoDeseadoValue = select.value;
+    } else {
+      errorEl.textContent = 'Seleccioná un puesto de tu interés (o elegí "Otro").';
+      errorEl.style.display = 'block';
+      return;
+    }
+  }
+
   if (!pendingCVBase64) {
     errorEl.textContent = 'Adjuntá tu CV en PDF antes de enviar.';
     errorEl.style.display = 'block';
@@ -1124,9 +1191,12 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
   btn.innerHTML = '<span class="spinner"></span> Enviando...';
 
   try {
+    const datosExtra = { Mensaje: document.getElementById('formMensaje').value.trim() };
+    if (puestoDeseadoValue) datosExtra.PuestoDeseado = puestoDeseadoValue;
+
     const resultado = await apiPost({
       busquedaId: busquedaSeleccionada ? busquedaSeleccionada.ID : '',
-      data: Object.assign({}, candidato, { Mensaje: document.getElementById('formMensaje').value.trim() }),
+      data: Object.assign({}, candidato, datosExtra),
       base64Data: pendingCVBase64,
       fileName: pendingCVFileName,
       mimeType: pendingCVMime
