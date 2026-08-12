@@ -159,7 +159,7 @@
   @media (max-width: 620px) { .top-bar { padding: 18px 18px; } }
   .top-bar h1 { font-size: 21px; font-weight: 800; margin: 0 0 5px; letter-spacing: -.01em; }
   .top-bar p { font-size: 13px; color: #5A564D; margin: 0; max-width: 640px; line-height: 1.5; }
-  .content { flex: 1; padding: 26px 30px 60px; max-width: 1180px; width: 100%; margin: 0 auto; }
+  .content { flex: 1; padding: 26px 40px 60px; max-width: 1600px; width: 100%; margin: 0 auto; }
   @media (max-width: 620px) { .content { padding: 20px 16px 50px; } }
   #viewFormulario .card, #viewExito .card { max-width: 560px; margin: 0 auto; }
   #viewFormulario .btn-link { display: block; max-width: 560px; margin: 0 auto 12px; }
@@ -169,22 +169,19 @@
   .busquedas-grid { display: flex; flex-direction: column; gap: 12px; }
 
   /* ---------- CONOCENOS (marcas del grupo) ---------- */
-  .marcas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .marcas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px 24px; padding: 10px 0 20px; }
   .marca-card-visual {
-    position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer;
-    aspect-ratio: 4 / 3; box-shadow: var(--shadow); border: 1px solid var(--gray-200);
-    transition: transform .15s, box-shadow .15s; background: var(--accent);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; cursor: pointer; padding: 10px 6px; border-radius: 10px; transition: background .15s;
   }
-  .marca-card-visual:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-  .marca-card-visual .marca-foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .marca-card-visual .marca-foto-fade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 42%, rgba(0,0,0,0.68) 100%); }
-  .marca-card-visual .marca-logo-overlay {
-    position: absolute; left: 14px; bottom: 12px; z-index: 2; background: rgba(255,255,255,0.96);
-    border-radius: 8px; padding: 8px 12px; max-width: 74%;
+  .marca-card-visual:hover { background: var(--accent-light); }
+  .marca-card-visual .marca-logo-plano { max-width: 100%; max-height: 64px; width: auto; height: auto; object-fit: contain; display: block; }
+  .marca-card-visual .marca-chevron {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
+    transition: transform .15s;
   }
-  .marca-card-visual .marca-logo-overlay img { max-width: 140px; max-height: 38px; width: auto; height: auto; object-fit: contain; display: block; }
-  .marca-card-visual.sin-foto { display: flex; align-items: center; justify-content: center; background: var(--sand); }
-  .marca-card-visual.sin-foto img { max-width: 65%; max-height: 45%; object-fit: contain; }
+  .marca-card-visual:hover .marca-chevron { transform: translateY(2px); }
 
   /* ---------- MODAL DE MARCA ---------- */
   .marca-modal-overlay {
@@ -204,15 +201,17 @@
   .marca-modal-body p { font-size: 13.5px; color: #5A564D; line-height: 1.7; margin: 0; white-space: pre-wrap; }
 
   /* ---------- INTRODUCCIÓN DEL GRUPO ---------- */
-  .grupo-intro { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 26px; }
-  .grupo-intro p { font-size: 13.5px; color: #5A564D; line-height: 1.7; margin: 0 0 16px; white-space: pre-wrap; break-inside: avoid; }
+  .grupo-intro { padding: 4px 0 36px; margin-bottom: 0; border-bottom: 1px solid var(--gray-200); }
+  .grupo-intro h3 { font-size: 20px; font-weight: 800; margin: 0 0 18px; color: var(--accent); }
+  .grupo-intro p { font-size: 14px; color: #3F3B37; line-height: 1.75; margin: 0 0 18px; white-space: pre-wrap; break-inside: avoid; }
   .grupo-intro p:last-child { margin-bottom: 0; }
-  .grupo-intro h4 { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); margin: 18px 0 6px; break-after: avoid; }
-  .grupo-intro h4:first-child { margin-top: 0; }
+  .grupo-intro h4 { font-size: 16px; font-weight: 800; margin: 26px 0 10px; color: var(--accent); break-after: avoid; }
+  .grupo-intro h4:first-of-type { margin-top: 0; }
   @media (min-width: 760px) {
-    .grupo-intro { column-count: 2; column-gap: 44px; }
+    .grupo-intro { column-count: 2; column-gap: 60px; }
+    .grupo-intro h3 { column-span: all; }
   }
-  .marcas-section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin: 0 0 14px; }
+  .marcas-section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin: 30px 0 20px; text-align: center; }
 
   .busqueda-card {
     background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
@@ -325,6 +324,7 @@
         <!-- VISTA: CONOCENOS (introducción al grupo y sus marcas) -->
         <div id="viewConocenos">
           <div class="grupo-intro">
+            <h3>Sobre Fabric Group</h3>
             <p>Allá por el 2008, y desde la cocina de su casa, Diego y Pablo comenzaron a cocinar para sus amigos convencidos de que se podía brindar un producto de calidad a un costo razonable. Seguros de que la sofisticación gastronómica podía estar al alcance de muchos, crearon Fabric Sushi y, de esta forma, dieron comienzo a uno de los grupos gastronómicos de la Argentina más relevantes de los últimos años.</p>
             <h4>Misión</h4>
             <p>Estamos para desarrollar conceptos gourmet boutique que puedan ser replicados a gran escala, para universalizar el acceso a comida de nicho étnica, aplicando procesos y fórmulas estandarizadas que garanticen la satisfacción del cliente, fomentando así la diversidad cultural y la revitalización urbana.</p>
@@ -774,22 +774,12 @@ function mostrarVistaConocenos() {
     grid.innerHTML = '<p style="color:var(--gray-400); font-size:13px;">(Todavía no se cargó el contenido de esta sección.)</p>';
     return;
   }
-  grid.innerHTML = MARCAS.map((m, i) => {
-    if (m.foto) {
-      return `
-        <div class="marca-card-visual" data-idx="${i}">
-          <img class="marca-foto" src="${m.foto}" alt="${escapeHtmlLocal(m.nombre)}">
-          <div class="marca-foto-fade"></div>
-          <div class="marca-logo-overlay"><img src="${m.imagen}" alt="${escapeHtmlLocal(m.nombre)}"></div>
-        </div>
-      `;
-    }
-    return `
-      <div class="marca-card-visual sin-foto" data-idx="${i}">
-        <img src="${m.imagen}" alt="${escapeHtmlLocal(m.nombre)}">
-      </div>
-    `;
-  }).join('');
+  grid.innerHTML = MARCAS.map((m, i) => `
+    <div class="marca-card-visual" data-idx="${i}">
+      <img class="marca-logo-plano" src="${m.imagen}" alt="${escapeHtmlLocal(m.nombre)}">
+      <div class="marca-chevron">▾</div>
+    </div>
+  `).join('');
   grid.querySelectorAll('.marca-card-visual').forEach(card => {
     card.addEventListener('click', () => abrirModalMarca(parseInt(card.getAttribute('data-idx'), 10)));
   });
