@@ -176,6 +176,70 @@
   /* ---------- LISTADO DE BÚSQUEDAS (estilo tarjetas tipo Indeed) ---------- */
   .busquedas-grid { display: flex; flex-direction: column; gap: 12px; }
 
+  /* ---------- HERO: CARRUSEL + BUSCADOR ---------- */
+  .hero-carousel {
+    position: relative; border-radius: 16px; overflow: hidden; min-height: 420px;
+    display: flex; align-items: flex-end; margin-bottom: 34px; background: var(--accent);
+    box-shadow: var(--shadow-lg);
+  }
+  @media (max-width: 620px) { .hero-carousel { min-height: 500px; border-radius: 12px; } }
+  .hero-carousel .hero-slide {
+    position: absolute; inset: 0; background-size: cover; background-position: center;
+    opacity: 0; transition: opacity 1s ease;
+  }
+  .hero-carousel .hero-slide.active { opacity: 1; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(20,18,16,0.86) 0%, rgba(20,18,16,0.55) 45%, rgba(20,18,16,0.25) 100%); z-index: 1; }
+  .hero-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 38px; height: 38px;
+    border-radius: 50%; border: none; background: rgba(255,255,255,0.85); color: var(--accent); font-size: 20px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .hero-arrow:hover { background: #fff; }
+  .hero-arrow-left { left: 16px; } .hero-arrow-right { right: 16px; }
+  .hero-content { position: relative; z-index: 2; padding: 40px 44px 40px; max-width: 620px; color: #fff; }
+  @media (max-width: 620px) { .hero-content { padding: 30px 22px 34px; } }
+  .hero-content h1 { font-size: 30px; font-weight: 800; margin: 0 0 16px; line-height: 1.2; letter-spacing: -.01em; }
+  @media (max-width: 620px) { .hero-content h1 { font-size: 23px; } }
+  .hero-badge {
+    display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+    color: #fff; font-size: 13px; font-weight: 700; padding: 7px 16px; border-radius: 20px; margin-bottom: 22px;
+  }
+  .hero-search label { display: block; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+  .hero-search-box { display: flex; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .hero-search-box input {
+    flex: 1; border: none; padding: 14px 16px; font-size: 15px; outline: none; background: transparent; min-width: 0;
+  }
+  .hero-search-box button {
+    border: none; background: var(--accent); color: #fff; font-weight: 700; font-size: 14px; padding: 0 22px; cursor: pointer;
+  }
+  .hero-search-box button:hover { background: #3A342F; }
+  .hero-no-match {
+    margin-top: 14px; background: rgba(255,255,255,0.95); color: var(--accent); border-radius: 10px;
+    padding: 14px 16px; font-size: 13px; line-height: 1.55;
+  }
+  .hero-no-match button {
+    margin-top: 10px; border: none; background: var(--accent); color: #fff; font-weight: 700; font-size: 13px;
+    padding: 9px 16px; border-radius: 8px; cursor: pointer;
+  }
+
+  /* ---------- VISTA PREVIA DE BÚSQUEDAS (estilo tarjetas compactas) ---------- */
+  .preview-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .preview-header h2 { font-size: 19px; font-weight: 800; margin: 0; color: var(--accent); }
+  .btn-link-strong { border: none; background: none; color: var(--accent); font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 0; }
+  .busquedas-preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 42px; }
+  .busqueda-preview-card {
+    background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 18px 18px 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px;
+  }
+  .busqueda-preview-card h3 { font-size: 14.5px; font-weight: 800; margin: 0; color: var(--accent); line-height: 1.35; }
+  .preview-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .preview-pill { background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .preview-location { font-size: 12px; color: var(--gray-400); display: flex; align-items: center; gap: 4px; }
+  .preview-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--gray-200); padding-top: 12px; margin-top: 2px; }
+  .preview-fecha { font-size: 11px; color: var(--gray-400); }
+  .btn-ver-mas { border: none; background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 700; padding: 8px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
+  .btn-ver-mas:hover { background: #3A342F; }
+
   /* ---------- CONOCENOS (marcas del grupo) ---------- */
   .marcas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 48px 28px; padding: 14px 0 24px; }
   .marca-card-visual {
@@ -337,8 +401,35 @@
 
       <div class="content">
 
-        <!-- VISTA: CONOCENOS (introducción al grupo y sus marcas) -->
+        <!-- VISTA: CONOCENOS (hero + buscador + vista previa de búsquedas + info del grupo) -->
         <div id="viewConocenos">
+
+          <!-- HERO: carrusel de fotos + buscador inteligente -->
+          <div class="hero-carousel" id="heroCarousel">
+            <div class="hero-overlay"></div>
+            <button class="hero-arrow hero-arrow-left" id="heroPrev" type="button">‹</button>
+            <button class="hero-arrow hero-arrow-right" id="heroNext" type="button">›</button>
+            <div class="hero-content">
+              <h1>Sumate al equipo de Fabric Group</h1>
+              <div class="hero-badge" id="heroBadgeCount">Buscando posiciones abiertas…</div>
+              <div class="hero-search">
+                <label>Encontrá tu próxima oportunidad</label>
+                <div class="hero-search-box">
+                  <input type="text" id="heroSearchInput" placeholder="Buscá por posición o área (ej: cocina, marketing, mozo...)">
+                  <button id="heroSearchBtn" type="button">Buscar</button>
+                </div>
+                <div class="hero-no-match" id="heroNoMatch" style="display:none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISTA PREVIA DE BÚSQUEDAS ABIERTAS -->
+          <div class="preview-header">
+            <h2>Explorá oportunidades para sumarte</h2>
+            <button class="btn-link-strong" id="btnVerTodasDesdePreview" type="button">Ver todas las búsquedas abiertas</button>
+          </div>
+          <div id="busquedasPreviewGrid" class="busquedas-preview-grid"></div>
+
           <div class="grupo-intro">
             <h3>Sobre Fabric Group</h3>
             <p>Allá por el 2008, y desde la cocina de su casa, Diego y Pablo comenzaron a cocinar para sus amigos convencidos de que se podía brindar un producto de calidad a un costo razonable. Seguros de que la sofisticación gastronómica podía estar al alcance de muchos, crearon Fabric Sushi y, de esta forma, dieron comienzo a uno de los grupos gastronómicos de la Argentina más relevantes de los últimos años.</p>
@@ -673,6 +764,7 @@ async function mostrarVistaBusquedas() {
 
   try {
     const abiertas = await apiGet('getBusquedasAbiertasPublico', {});
+    busquedasCache = abiertas || [];
     if (!abiertas || !abiertas.length) {
       grid.innerHTML = '';
       empty.style.display = 'block';
@@ -685,10 +777,15 @@ async function mostrarVistaBusquedas() {
         <div class="bq-header">
           <div>
             <div class="bq-puesto">${escapeHtmlLocal(b.Puesto)}</div>
-            <div class="bq-area">${escapeHtmlLocal(b.Area) || 'Fabric Group'}</div>
+            <div class="preview-pills" style="margin:8px 0 6px;">
+              <span class="preview-pill">${escapeHtmlLocal(b.Area) || 'Fabric Group'}</span>
+              <span class="preview-pill">Presencial</span>
+            </div>
+            <div class="preview-location">📍 Buenos Aires, Argentina</div>
           </div>
           <button class="btn-primary bq-postularme" data-id="${b.ID}" data-puesto="${escapeHtmlLocal(b.Puesto)}" data-area="${escapeHtmlLocal(b.Area || '')}">Postularme</button>
         </div>
+        <div class="preview-fecha" style="margin-top:10px;">${formatearFechaRelativa(b.FechaCreacion)}</div>
         ${detalle ? `
           <div class="bq-detalle" id="bqDetalle_${i}">${escapeHtmlLocal(detalle)}<div class="bq-detalle-fade" id="bqFade_${i}"></div></div>
           <button class="bq-leer-mas" data-target="${i}">Leer descripción completa</button>
@@ -775,6 +872,124 @@ const MARCAS = [
   }
 ];
 
+// ======================================================================
+// HERO: carrusel, contador de búsquedas y buscador inteligente
+// ======================================================================
+let busquedasCache = [];
+let heroCarruselIdx = 0;
+let heroCarruselTimer = null;
+
+function formatearFechaRelativa(fechaISO) {
+  if (!fechaISO) return 'Publicado recientemente';
+  const dias = Math.floor((Date.now() - new Date(fechaISO).getTime()) / 86400000);
+  if (dias <= 0) return 'Publicado hoy';
+  if (dias === 1) return 'Publicado ayer';
+  if (dias < 30) return `Publicado hace ${dias} días`;
+  return 'Publicado recientemente';
+}
+
+function inicializarHeroCarrusel() {
+  const carrusel = document.getElementById('heroCarousel');
+  const fotos = MARCAS.map(m => m.foto).filter(Boolean);
+  if (!fotos.length) return;
+  carrusel.querySelectorAll('.hero-slide').forEach(s => s.remove());
+  fotos.forEach((foto, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
+    slide.style.backgroundImage = `url('${foto}')`;
+    carrusel.insertBefore(slide, carrusel.firstChild);
+  });
+  heroCarruselIdx = 0;
+  if (heroCarruselTimer) clearInterval(heroCarruselTimer);
+  heroCarruselTimer = setInterval(() => avanzarHeroCarrusel(1), 5000);
+  document.getElementById('heroPrev').onclick = () => avanzarHeroCarrusel(-1);
+  document.getElementById('heroNext').onclick = () => avanzarHeroCarrusel(1);
+}
+
+function avanzarHeroCarrusel(direccion) {
+  const slides = document.querySelectorAll('#heroCarousel .hero-slide');
+  if (!slides.length) return;
+  slides[heroCarruselIdx].classList.remove('active');
+  heroCarruselIdx = (heroCarruselIdx + direccion + slides.length) % slides.length;
+  slides[heroCarruselIdx].classList.add('active');
+}
+
+async function cargarBusquedasParaHeroYPreview() {
+  const badge = document.getElementById('heroBadgeCount');
+  const preview = document.getElementById('busquedasPreviewGrid');
+  try {
+    busquedasCache = await apiGet('getBusquedasAbiertasPublico', {});
+  } catch (err) {
+    badge.textContent = 'Sumate a nuestro equipo';
+    preview.innerHTML = '<p style="color:var(--gray-400); font-size:13px;">No pudimos cargar las búsquedas en este momento.</p>';
+    return;
+  }
+  const n = busquedasCache.length;
+  badge.textContent = n > 0
+    ? `+${n} ${n === 1 ? 'posición abierta' : 'posiciones abiertas'}`
+    : 'Dejanos tu CV para futuras oportunidades';
+
+  if (!n) {
+    preview.innerHTML = '<p style="color:var(--gray-400); font-size:13px;">No hay búsquedas abiertas en este momento. Podés dejarnos tu CV desde "Cargá tu CV" en el menú.</p>';
+    return;
+  }
+  preview.innerHTML = busquedasCache.slice(0, 4).map(b => renderizarTarjetaPreview(b)).join('');
+  wirePreviewCardButtons(preview);
+}
+
+function renderizarTarjetaPreview(b) {
+  return `
+    <div class="busqueda-preview-card">
+      <h3>${escapeHtmlLocal(b.Puesto)}</h3>
+      <div class="preview-pills">
+        <span class="preview-pill">${escapeHtmlLocal(b.Area) || 'Fabric Group'}</span>
+        <span class="preview-pill">Presencial</span>
+      </div>
+      <div class="preview-location">📍 Buenos Aires, Argentina</div>
+      <div class="preview-footer">
+        <span class="preview-fecha">${formatearFechaRelativa(b.FechaCreacion)}</span>
+        <button class="btn-ver-mas" data-id="${b.ID}" data-puesto="${escapeHtmlLocal(b.Puesto)}" data-area="${escapeHtmlLocal(b.Area || '')}" type="button">Ver más</button>
+      </div>
+    </div>
+  `;
+}
+
+function wirePreviewCardButtons(container) {
+  container.querySelectorAll('.btn-ver-mas').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mostrarVistaFormulario({ ID: btn.getAttribute('data-id'), Puesto: btn.getAttribute('data-puesto'), Area: btn.getAttribute('data-area') });
+    });
+  });
+}
+
+function ejecutarBusquedaHero() {
+  const texto = document.getElementById('heroSearchInput').value.trim().toLowerCase();
+  const noMatch = document.getElementById('heroNoMatch');
+  noMatch.style.display = 'none';
+  if (!texto) return;
+
+  const coincidencia = busquedasCache.find(b =>
+    (b.Puesto || '').toLowerCase().includes(texto) || (b.Area || '').toLowerCase().includes(texto)
+  );
+
+  if (coincidencia) {
+    mostrarVistaFormulario({ ID: coincidencia.ID, Puesto: coincidencia.Puesto, Area: coincidencia.Area || '' });
+    return;
+  }
+
+  noMatch.innerHTML = `
+    No tenemos búsquedas activas de "${escapeHtmlLocal(document.getElementById('heroSearchInput').value.trim())}" por el momento, pero podés dejarnos tu CV para futuras oportunidades.
+    <br><button type="button" id="btnHeroIrACargarCV">Cargar mi CV</button>
+  `;
+  noMatch.style.display = 'block';
+  document.getElementById('btnHeroIrACargarCV').addEventListener('click', () => mostrarVistaFormulario(null));
+}
+
+document.getElementById('heroSearchBtn').addEventListener('click', ejecutarBusquedaHero);
+document.getElementById('heroSearchInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') ejecutarBusquedaHero();
+});
+
 function mostrarVistaConocenos() {
   vistaActual = 'conocenos';
   marcarNavActivo('conocenos');
@@ -784,6 +999,9 @@ function mostrarVistaConocenos() {
   document.getElementById('viewBusquedas').style.display = 'none';
   document.getElementById('viewFormulario').style.display = 'none';
   document.getElementById('viewExito').style.display = 'none';
+
+  inicializarHeroCarrusel();
+  cargarBusquedasParaHeroYPreview();
 
   const grid = document.getElementById('marcasGrid');
   if (!MARCAS.length) {
@@ -800,6 +1018,8 @@ function mostrarVistaConocenos() {
     card.addEventListener('click', () => abrirModalMarca(parseInt(card.getAttribute('data-idx'), 10)));
   });
 }
+
+document.getElementById('btnVerTodasDesdePreview').addEventListener('click', () => mostrarVistaBusquedas());
 
 function abrirModalMarca(idx) {
   const m = MARCAS[idx];
