@@ -856,6 +856,19 @@ const MARCAS = [
   }
 ];
 
+// Precarga las fotos del hero apenas se define MARCAS, para que el navegador
+// ya las tenga decodificadas cuando el usuario llegue a "Conocenos" (evita
+// que la primera imagen del carrusel tarde en aparecer).
+function precargarFotosHero() {
+  MARCAS.forEach(m => {
+    if (m.foto) {
+      const img = new Image();
+      img.src = m.foto;
+    }
+  });
+}
+precargarFotosHero();
+
 // ======================================================================
 // HERO: carrusel, contador de búsquedas y buscador inteligente
 // ======================================================================
@@ -1085,22 +1098,29 @@ async function mostrarVistaFormulario(busqueda) {
 }
 
 let puestosCache = null;
+const PUESTOS_FALLBACK_CLIENTE = [
+  'Mozo/a', 'Bartender', 'Cocinero/a', 'Ayudante de cocina', 'Encargado/a de local',
+  'Host/Hostess', 'Cajero/a', 'Repositor/a', 'Administrativo/a', 'Marketing'
+];
 async function cargarPuestosParaSelect() {
   const select = document.getElementById('selectPuestoDeseado');
   if (puestosCache) return; // ya cargados en esta sesión
+  let puestos = [];
   try {
-    const puestos = await apiGet('getPuestosPublico', {});
-    puestosCache = Array.isArray(puestos) ? puestos : [];
-    const otroOption = select.querySelector('option[value="__otro__"]');
-    puestosCache.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p;
-      opt.textContent = p;
-      select.insertBefore(opt, otroOption);
-    });
+    const respuesta = await apiGet('getPuestosPublico', {});
+    puestos = Array.isArray(respuesta) ? respuesta : [];
   } catch (err) {
-    puestosCache = [];
+    puestos = [];
   }
+  if (!puestos.length) puestos = PUESTOS_FALLBACK_CLIENTE;
+  puestosCache = puestos;
+  const otroOption = select.querySelector('option[value="__otro__"]');
+  puestosCache.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    select.insertBefore(opt, otroOption);
+  });
 }
 
 document.getElementById('selectPuestoDeseado').addEventListener('change', function () {
