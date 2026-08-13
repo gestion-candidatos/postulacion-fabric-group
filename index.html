@@ -101,10 +101,9 @@
   @media (max-width: 820px) { .login-left { flex: none; min-height: 260px; padding: 28px 24px; } }
   .login-left-content { position: relative; z-index: 1; }
   .login-badge {
-    display: inline-block; background: rgba(246,244,238,0.94);
-    padding: 12px 16px; border-radius: 8px; margin-bottom: 18px;
+    display: inline-block; margin-bottom: 18px;
   }
-  .login-badge img { height: 32px; width: auto; display: block; }
+  .login-badge img { height: 36px; width: auto; display: block; }
   .login-left-content .divider { width: 40px; height: 3px; background: var(--sand); margin-bottom: 14px; border-radius: 2px; }
   .login-left-content p { font-size: 14px; color: rgba(255,255,255,0.9); max-width: 380px; line-height: 1.6; margin: 0; }
   .login-right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; background: var(--paper); }
@@ -260,12 +259,12 @@
   /* ---------- INTRODUCCIÓN DEL GRUPO ---------- */
   .grupo-intro { padding: 4px 0 40px; margin-bottom: 8px; border-bottom: 1px solid var(--gray-200); }
   .grupo-intro h3 { font-size: 22px; font-weight: 800; margin: 0 0 20px; color: var(--accent); text-align: center; }
-  .grupo-intro-texto { max-width: 720px; margin: 0 auto 32px; }
-  .grupo-intro-texto p { font-size: 14px; color: #3F3B37; line-height: 1.75; margin: 0; white-space: pre-wrap; text-align: center; }
-  .mision-vision-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
+  .grupo-intro-texto { max-width: 1100px; margin: 0 auto 32px; }
+  .grupo-intro-texto p { font-size: 15px; color: #3F3B37; line-height: 1.8; margin: 0; white-space: pre-wrap; text-align: center; }
+  .mision-vision-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: none; margin: 0; }
   @media (min-width: 700px) { .mision-vision-grid { grid-template-columns: 1fr 1fr; } }
-  .mision-vision-grid h4 { font-size: 16px; font-weight: 800; margin: 0 0 10px; color: var(--accent); }
-  .mision-vision-grid p { font-size: 13.5px; color: #5A564D; line-height: 1.7; margin: 0; white-space: pre-wrap; }
+  .mision-vision-grid h4 { font-size: 17px; font-weight: 800; margin: 0 0 12px; color: var(--accent); }
+  .mision-vision-grid p { font-size: 14.5px; color: #5A564D; line-height: 1.75; margin: 0; white-space: pre-wrap; }
   .marcas-section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin: 30px 0 20px; text-align: center; }
 
   /* ---------- REDES SOCIALES ---------- */
@@ -358,6 +357,17 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- ============ PANTALLA INTERMEDIA: DETECCIÓN DE ADMIN ============ -->
+<div id="adminGateScreen" style="display:none; min-height:100vh; align-items:center; justify-content:center; background: var(--paper); padding: 24px;">
+  <div class="card" style="max-width: 460px; width:100%; text-align:center; margin: 0 auto;">
+    <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color: var(--gray-400); margin-bottom: 10px;">Ingresaste como administrador</div>
+    <h2 id="adminGateSaludo" style="font-size:20px; font-weight:800; color: var(--accent); margin: 0 0 22px;">¡Hola!</h2>
+    <button class="btn-primary" id="btnEntrarPanelInterno" style="width:100%; margin-bottom:12px;">Entrar al panel interno</button>
+    <button class="btn-link" id="btnVerComoCandidatoDesdeGate" style="width:100%;">Ver como candidato</button>
+    <div class="error-msg" id="adminGateError" style="margin-top:14px;"></div>
   </div>
 </div>
 
@@ -521,6 +531,24 @@
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6XwgUO-tBo3hjkGIH6nmQs4Wo4yRRIfWCgfT4DzAgwOTYqrfXkHI1nM93jl0bsYVVoA/exec';
 // Client ID de OAuth de Google (ver instrucciones para crearlo en Google Cloud Console).
 const GOOGLE_CLIENT_ID = '880796146723-s99rdfn9r1rai570514og7edivktp4cq.apps.googleusercontent.com';
+
+// URL de la Web App del panel interno (Apps Script — Code.gs / Index.html).
+// Reemplazá este placeholder por la URL real (Implementar → Administrar
+// implementaciones → copiar la URL de la Web App del panel interno).
+const PANEL_INTERNO_URL = 'PEGAR_AQUI_LA_URL_DEL_PANEL_INTERNO';
+
+// Esta lista es SOLO para decidir qué pantalla mostrar (UX) — no es una
+// verificación de seguridad real. La verificación real de quién es admin
+// pasa en el panel interno, con la sesión de Google de ese proyecto. Si
+// agregás o quitás administradores, actualizá también ADMIN_EMAILS en el
+// Code.gs del panel interno para que ambas listas queden sincronizadas.
+const ADMIN_EMAILS_UX = [
+  'adrian.galvan@grupo-fabric.com',
+  'florencia.salvaneschi@grupo-fabric.com'
+];
+function esEmailAdminUX(email) {
+  return ADMIN_EMAILS_UX.includes((email || '').toLowerCase().trim());
+}
 
 let candidato = null; // { Nombre, Apellido, Email, Telefono } — se completa tras el login de Google
 let datosGoogle = null; // { given_name, family_name, email, name } — lo que devuelve Google
@@ -727,9 +755,33 @@ document.getElementById('btnContinuar').addEventListener('click', () => {
   candidato = { Nombre: nombre, Apellido: apellido, Email: (datosGoogle && datosGoogle.email) || '', Telefono: telefono };
   document.getElementById('sidebarUserName').textContent = nombre + ' ' + apellido;
 
+  if (esEmailAdminUX(candidato.Email)) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminGateScreen').style.display = 'flex';
+    document.getElementById('adminGateSaludo').textContent = '¡Hola, ' + nombre + '!';
+    return;
+  }
+
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
 
+  mostrarVistaConocenos();
+});
+
+document.getElementById('btnEntrarPanelInterno').addEventListener('click', () => {
+  const errorEl = document.getElementById('adminGateError');
+  errorEl.style.display = 'none';
+  if (!PANEL_INTERNO_URL || PANEL_INTERNO_URL.indexOf('http') !== 0) {
+    errorEl.textContent = 'Todavía no está configurada la URL del panel interno (PANEL_INTERNO_URL en el index.html).';
+    errorEl.style.display = 'block';
+    return;
+  }
+  window.location.href = PANEL_INTERNO_URL;
+});
+
+document.getElementById('btnVerComoCandidatoDesdeGate').addEventListener('click', () => {
+  document.getElementById('adminGateScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
   mostrarVistaConocenos();
 });
 
