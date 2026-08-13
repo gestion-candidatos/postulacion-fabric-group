@@ -258,17 +258,25 @@
   .marca-modal-body p { font-size: 13.5px; color: #5A564D; line-height: 1.7; margin: 0; white-space: pre-wrap; }
 
   /* ---------- INTRODUCCIÓN DEL GRUPO ---------- */
-  .grupo-intro { padding: 4px 0 36px; margin-bottom: 0; border-bottom: 1px solid var(--gray-200); }
-  .grupo-intro h3 { font-size: 20px; font-weight: 800; margin: 0 0 18px; color: var(--accent); }
-  .grupo-intro p { font-size: 14px; color: #3F3B37; line-height: 1.75; margin: 0 0 18px; white-space: pre-wrap; break-inside: avoid; }
-  .grupo-intro p:last-child { margin-bottom: 0; }
-  .grupo-intro h4 { font-size: 16px; font-weight: 800; margin: 26px 0 10px; color: var(--accent); break-after: avoid; }
-  .grupo-intro h4:first-of-type { margin-top: 0; }
-  @media (min-width: 760px) {
-    .grupo-intro { column-count: 2; column-gap: 60px; }
-    .grupo-intro h3 { column-span: all; }
-  }
+  .grupo-intro { padding: 4px 0 40px; margin-bottom: 8px; border-bottom: 1px solid var(--gray-200); }
+  .grupo-intro h3 { font-size: 22px; font-weight: 800; margin: 0 0 20px; color: var(--accent); text-align: center; }
+  .grupo-intro-texto { max-width: 720px; margin: 0 auto 32px; }
+  .grupo-intro-texto p { font-size: 14px; color: #3F3B37; line-height: 1.75; margin: 0; white-space: pre-wrap; text-align: center; }
+  .mision-vision-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
+  @media (min-width: 700px) { .mision-vision-grid { grid-template-columns: 1fr 1fr; } }
+  .mision-vision-grid h4 { font-size: 16px; font-weight: 800; margin: 0 0 10px; color: var(--accent); }
+  .mision-vision-grid p { font-size: 13.5px; color: #5A564D; line-height: 1.7; margin: 0; white-space: pre-wrap; }
   .marcas-section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin: 30px 0 20px; text-align: center; }
+
+  /* ---------- REDES SOCIALES ---------- */
+  .redes-section { text-align: center; padding: 34px 0 10px; margin-top: 10px; }
+  .redes-section p { font-size: 13px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 14px; }
+  .redes-social-link {
+    display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+    border-radius: 50%; background: var(--accent); transition: background .15s, transform .15s;
+  }
+  .redes-social-link:hover { background: #0A66C2; transform: translateY(-2px); }
+  .redes-social-link svg { width: 22px; height: 22px; fill: #fff; }
 
   .busqueda-card {
     background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
@@ -373,7 +381,7 @@
     <main class="main-area">
       <div class="top-bar">
         <h1 id="viewTitle">Conocé Fabric Group</h1>
-        <p id="viewDesc">Un grupo, muchas marcas — conocé nuestra historia antes de postularte.</p>
+        <p id="viewDesc">Un grupo, muchas marcas — conocé nuestra historia.</p>
       </div>
 
       <div class="content">
@@ -398,24 +406,41 @@
             </div>
           </div>
 
+          <div class="grupo-intro">
+            <h3>Sobre Fabric Group</h3>
+            <div class="grupo-intro-texto">
+              <p>Allá por el 2008, y desde la cocina de su casa, Diego y Pablo comenzaron a cocinar para sus amigos convencidos de que se podía brindar un producto de calidad a un costo razonable. Seguros de que la sofisticación gastronómica podía estar al alcance de muchos, crearon Fabric Sushi y, de esta forma, dieron comienzo a uno de los grupos gastronómicos de la Argentina más relevantes de los últimos años.</p>
+            </div>
+            <div class="mision-vision-grid">
+              <div>
+                <h4>Visión</h4>
+                <p>Ser una empresa gastronómica multicadena de más de 200 sucursales en Latinoamérica, Estados Unidos y España para el 2030, con una eficiencia operativa de clase mundial, complementada con otros formatos de escalabilidad diversas en diferentes estadíos de madurez que validen el know-how del negocio gastronómico.</p>
+              </div>
+              <div>
+                <h4>Misión</h4>
+                <p>Estamos para desarrollar conceptos gourmet boutique que puedan ser replicados a gran escala, para universalizar el acceso a comida de nicho étnica, aplicando procesos y fórmulas estandarizadas que garanticen la satisfacción del cliente, fomentando así la diversidad cultural y la revitalización urbana.</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="marcas-section-title">Nuestras marcas</p>
+          <div id="marcasGrid" class="marcas-grid"></div>
+
           <!-- VISTA PREVIA DE BÚSQUEDAS ABIERTAS -->
-          <div class="preview-header">
+          <div class="preview-header" style="margin-top:44px;">
             <h2>Explorá oportunidades para sumarte</h2>
             <button class="btn-link-strong" id="btnVerTodasDesdePreview" type="button">Ver todas las búsquedas abiertas</button>
           </div>
           <div id="busquedasPreviewGrid" class="busquedas-preview-grid"></div>
 
-          <div class="grupo-intro">
-            <h3>Sobre Fabric Group</h3>
-            <p>Allá por el 2008, y desde la cocina de su casa, Diego y Pablo comenzaron a cocinar para sus amigos convencidos de que se podía brindar un producto de calidad a un costo razonable. Seguros de que la sofisticación gastronómica podía estar al alcance de muchos, crearon Fabric Sushi y, de esta forma, dieron comienzo a uno de los grupos gastronómicos de la Argentina más relevantes de los últimos años.</p>
-            <h4>Misión</h4>
-            <p>Estamos para desarrollar conceptos gourmet boutique que puedan ser replicados a gran escala, para universalizar el acceso a comida de nicho étnica, aplicando procesos y fórmulas estandarizadas que garanticen la satisfacción del cliente, fomentando así la diversidad cultural y la revitalización urbana.</p>
-            <h4>Visión</h4>
-            <p>Ser una empresa gastronómica multicadena de más de 200 sucursales en Latinoamérica, Estados Unidos y España para el 2030, con una eficiencia operativa de clase mundial, complementada con otros formatos de escalabilidad diversas en diferentes estadíos de madurez que validen el know-how del negocio gastronómico.</p>
+          <button class="btn-primary" id="btnVerBusquedasDesdeConocenos" style="width:100%; max-width:320px; margin:10px auto 0; display:block;">Ver búsquedas abiertas</button>
+
+          <div class="redes-section">
+            <p>Seguinos en nuestras redes</p>
+            <a class="redes-social-link" href="https://www.linkedin.com/company/group-fabric/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="Fabric Group en LinkedIn">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.44-2.14 2.94v5.66H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.11 20.45H3.56V9h3.55v11.45z"/></svg>
+            </a>
           </div>
-          <p class="marcas-section-title">Nuestras marcas</p>
-          <div id="marcasGrid" class="marcas-grid"></div>
-          <button class="btn-primary" id="btnVerBusquedasDesdeConocenos" style="width:100%; max-width:320px; margin:30px auto 0; display:block;">Ver búsquedas abiertas</button>
         </div>
 
         <!-- VISTA: LISTADO DE BÚSQUEDAS -->
@@ -989,7 +1014,7 @@ function mostrarVistaConocenos() {
   vistaActual = 'conocenos';
   marcarNavActivo('conocenos');
   document.getElementById('viewTitle').textContent = 'Conocé Fabric Group';
-  document.getElementById('viewDesc').textContent = 'Un grupo, muchas marcas — conocé nuestra historia antes de postularte.';
+  document.getElementById('viewDesc').textContent = 'Un grupo, muchas marcas — conocé nuestra historia.';
   document.getElementById('viewConocenos').style.display = 'block';
   document.getElementById('viewBusquedas').style.display = 'none';
   document.getElementById('viewFormulario').style.display = 'none';
