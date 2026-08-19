@@ -721,7 +721,7 @@ function manejarRespuestaGoogle(response) {
   if (esEmailAdminUX(emailGoogle)) {
     candidato = { Nombre: nombreGoogle, Apellido: apellidoGoogle, Email: emailGoogle, Telefono: '' };
     document.getElementById('sidebarUserName').textContent = (nombreGoogle + ' ' + apellidoGoogle).trim();
-    document.getElementById('googleLoginWrap').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminGateScreen').style.display = 'flex';
     document.getElementById('adminGateSaludo').textContent = '¡Hola' + (nombreGoogle ? ', ' + nombreGoogle : '') + '!';
     return;
