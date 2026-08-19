@@ -371,6 +371,17 @@
   </div>
 </div>
 
+<!-- ============ PANTALLA INTERMEDIA: DETECCIÓN DE GERENTE ============ -->
+<div id="gerenteGateScreen" style="display:none; min-height:100vh; align-items:center; justify-content:center; background: var(--paper); padding: 24px;">
+  <div class="card" style="max-width: 460px; width:100%; text-align:center; margin: 0 auto;">
+    <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color: var(--gray-400); margin-bottom: 10px;">Ingresaste como gerente</div>
+    <h2 id="gerenteGateSaludo" style="font-size:20px; font-weight:800; color: var(--accent); margin: 0 0 22px;">¡Hola!</h2>
+    <button class="btn-primary" id="btnVerMisCandidatosGate" style="width:100%; margin-bottom:12px;">Ver mis candidatos</button>
+    <button class="btn-link" id="btnVerComoCandidatoDesdeGerenteGate" style="width:100%;">Ver como candidato</button>
+    <div class="error-msg" id="gerenteGateError" style="margin-top:14px;"></div>
+  </div>
+</div>
+
 <!-- ============ PANTALLA 2: APP (sidebar + contenido) ============ -->
 <div id="appScreen">
   <div class="app-layout">
@@ -550,6 +561,20 @@ function esEmailAdminUX(email) {
   return ADMIN_EMAILS_UX.includes((email || '').toLowerCase().trim());
 }
 
+// Gerentes SIN acceso al panel completo (Adrián ya está cubierto arriba
+// como admin). Mismo criterio: esto es solo para decidir qué pantalla
+// mostrar acá en la landing — la verificación real pasa en el panel interno
+// (Code.gs), que ya tiene su propia lista GERENTES sincronizada a mano.
+const GERENTES_EMAILS_UX = [
+  'aldana.lombardi@grupo-fabric.com',
+  'gaspard.hambuckers@grupo-fabric.com',
+  'tamara.taiana@grupo-fabric.com',
+  'lucas.bazzano@grupo-fabric.com'
+];
+function esEmailGerenteUX(email) {
+  return GERENTES_EMAILS_UX.includes((email || '').toLowerCase().trim());
+}
+
 let candidato = null; // { Nombre, Apellido, Email, Telefono } — se completa tras el login de Google
 let datosGoogle = null; // { given_name, family_name, email, name } — lo que devuelve Google
 let vistaActual = 'busquedas';
@@ -727,6 +752,17 @@ function manejarRespuestaGoogle(response) {
     return;
   }
 
+  // Los gerentes (sin acceso al panel completo) también entran directo,
+  // a una pantalla propia con acceso rápido a "Ver mis candidatos".
+  if (esEmailGerenteUX(emailGoogle)) {
+    candidato = { Nombre: nombreGoogle, Apellido: apellidoGoogle, Email: emailGoogle, Telefono: '' };
+    document.getElementById('sidebarUserName').textContent = (nombreGoogle + ' ' + apellidoGoogle).trim();
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('gerenteGateScreen').style.display = 'flex';
+    document.getElementById('gerenteGateSaludo').textContent = '¡Hola' + (nombreGoogle ? ', ' + nombreGoogle : '') + '!';
+    return;
+  }
+
   // Google no siempre separa nombre/apellido — completamos lo mejor posible
   // y dejamos que la persona lo confirme/corrija en el paso siguiente.
   document.getElementById('loginNombre').value = nombreGoogle;
@@ -777,6 +813,13 @@ document.getElementById('btnContinuar').addEventListener('click', () => {
     return;
   }
 
+  if (esEmailGerenteUX(candidato.Email)) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('gerenteGateScreen').style.display = 'flex';
+    document.getElementById('gerenteGateSaludo').textContent = '¡Hola, ' + nombre + '!';
+    return;
+  }
+
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
 
@@ -797,6 +840,23 @@ document.getElementById('btnEntrarPanelInterno').addEventListener('click', () =>
 
 document.getElementById('btnVerComoCandidatoDesdeGate').addEventListener('click', () => {
   document.getElementById('adminGateScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  mostrarVistaConocenos();
+});
+
+document.getElementById('btnVerMisCandidatosGate').addEventListener('click', () => {
+  const errorEl = document.getElementById('gerenteGateError');
+  errorEl.style.display = 'none';
+  if (!PANEL_INTERNO_URL || PANEL_INTERNO_URL.indexOf('http') !== 0) {
+    errorEl.textContent = 'Todavía no está configurada la URL del panel interno (PANEL_INTERNO_URL en el index.html).';
+    errorEl.style.display = 'block';
+    return;
+  }
+  window.open(PANEL_INTERNO_URL, '_blank');
+});
+
+document.getElementById('btnVerComoCandidatoDesdeGerenteGate').addEventListener('click', () => {
+  document.getElementById('gerenteGateScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
   mostrarVistaConocenos();
 });
