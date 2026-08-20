@@ -546,7 +546,7 @@ const GOOGLE_CLIENT_ID = '880796146723-s99rdfn9r1rai570514og7edivktp4cq.apps.goo
 // URL de la Web App del panel interno (Apps Script — Code.gs / Index.html).
 // Reemplazá este placeholder por la URL real (Implementar → Administrar
 // implementaciones → copiar la URL de la Web App del panel interno).
-const PANEL_INTERNO_URL = 'https://script.google.com/a/macros/grupo-fabric.com/s/AKfycbyp8rBtOjG-kEXP8DJkdB-QQcoCQEvtZBUSAOfUZdGvfZuJ5oZSxk4wLyUuhXnbsLck/exec';
+const PANEL_INTERNO_URL = 'PEGAR_AQUI_LA_URL_DEL_PANEL_INTERNO';
 
 // Esta lista es SOLO para decidir qué pantalla mostrar (UX) — no es una
 // verificación de seguridad real. La verificación real de quién es admin
@@ -1399,6 +1399,21 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
 // ======================================================================
 window.addEventListener('DOMContentLoaded', async () => {
   const marker = document.getElementById('buildMarker');
+
+  // Modo "vista previa" (usado por el botón "Candidato" del panel interno):
+  // si la URL trae ?preview=1, se salta el login de Google directamente y
+  // muestra la app tal como la ve un candidato ya logueado, sin necesidad
+  // de una cuenta de Google real ni de enviar ninguna postulación.
+  const paramsUrl = new URLSearchParams(window.location.search);
+  if (paramsUrl.get('preview')) {
+    candidato = { Nombre: 'Vista previa', Apellido: '', Email: '', Telefono: '' };
+    document.getElementById('sidebarUserName').textContent = 'Vista previa';
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    mostrarVistaConocenos();
+    return;
+  }
+
   try {
     marker.textContent = 'Landing build: portal-v1 [3-DOMContentLoaded disparado]';
 
