@@ -1438,9 +1438,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (paramsUrl.get('preview')) {
     candidato = { Nombre: 'Vista previa', Apellido: '', Email: '', Telefono: '' };
     document.getElementById('sidebarUserName').textContent = 'Vista previa';
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appScreen').style.display = 'block';
-    mostrarVistaConocenos();
+    entrarComoCandidatoOConfirmarDatos();
     return;
   }
 
