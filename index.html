@@ -474,7 +474,7 @@
 
         <!-- VISTA: FORMULARIO (postularse a una búsqueda, o carga general de CV) -->
         <div id="viewFormulario" style="display:none;">
-          <button class="btn-link" id="btnVolverBusquedas" style="display:none;">‹ Volver a búsquedas</button>
+          <button class="btn-link" id="btnVolverBusquedas" style="display:none;">&lsaquo; Volver a búsquedas</button>
           <div class="card">
             <div id="puestoPillWrap" style="display:none;"><span class="puesto-pill" id="puestoPillText"></span></div>
             <button type="button" class="btn-ver-detalle" id="btnVerDetalle" style="display:none;">Ver detalle de la búsqueda</button>
@@ -507,7 +507,7 @@
         <!-- VISTA: ÉXITO -->
         <div id="viewExito" style="display:none;">
           <div class="card success-view">
-            <div class="check">✓</div>
+            <div class="check">&#10003;</div>
             <h2>¡Postulación enviada!</h2>
             <p>Gracias por tu interés. Nuestro equipo de Recursos Humanos va a revisar tu perfil. Si calza con alguna búsqueda, nos vamos a poner en contacto.</p>
             <button class="btn-secondary" id="btnVolverAlInicio" style="margin-top:20px;">Volver a búsquedas</button>
@@ -522,7 +522,7 @@
 <!-- ============ MODAL: HISTORIA DE LA MARCA ============ -->
 <div class="marca-modal-overlay" id="marcaModalOverlay">
   <div class="marca-modal">
-    <button class="marca-modal-close" id="btnCerrarModalMarca">✕</button>
+    <button class="marca-modal-close" id="btnCerrarModalMarca">&times;</button>
     <img class="marca-modal-foto" id="modalMarcaFoto" src="" alt="">
     <div class="marca-modal-body">
       <img class="marca-modal-logo" id="modalMarcaLogo" src="" alt="">
@@ -544,9 +544,9 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGppz3nK4rXsGI
 const GOOGLE_CLIENT_ID = '880796146723-s99rdfn9r1rai570514og7edivktp4cq.apps.googleusercontent.com';
 
 // URL de la Web App del panel interno (Apps Script — Code.gs / Index.html).
-// Reemplazá este placeholder por la URL real (Implementar → Administrar
-// implementaciones → copiar la URL de la Web App del panel interno).
-const PANEL_INTERNO_URL = 'https://script.google.com/a/macros/grupo-fabric.com/s/AKfycbyp8rBtOjG-kEXP8DJkdB-QQcoCQEvtZBUSAOfUZdGvfZuJ5oZSxk4wLyUuhXnbsLck/exec;
+// Reemplazá este placeholder por la URL real (Implementar -> Administrar
+// implementaciones -> copiar la URL de la Web App del panel interno).
+const PANEL_INTERNO_URL = 'https://script.google.com/a/macros/grupo-fabric.com/s/AKfycbyp8rBtOjG-kEXP8DJkdB-QQcoCQEvtZBUSAOfUZdGvfZuJ5oZSxk4wLyUuhXnbsLck/exec';
 
 // Esta lista es SOLO para decidir qué pantalla mostrar (UX) — no es una
 // verificación de seguridad real. La verificación real de quién es admin
@@ -918,7 +918,7 @@ async function mostrarVistaBusquedas() {
               <span class="preview-pill">${escapeHtmlLocal(b.Area) || 'Fabric Group'}</span>
               <span class="preview-pill">Presencial</span>
             </div>
-            <div class="preview-location">📍 Buenos Aires, Argentina</div>
+            <div class="preview-location">\u{1F4CD} Buenos Aires, Argentina</div>
           </div>
           <button class="btn-primary bq-postularme" data-id="${b.ID}" data-puesto="${escapeHtmlLocal(b.Puesto)}" data-area="${escapeHtmlLocal(b.Area || '')}">Postularme</button>
         </div>
@@ -1093,7 +1093,7 @@ function renderizarTarjetaPreview(b) {
         <span class="preview-pill">${escapeHtmlLocal(b.Area) || 'Fabric Group'}</span>
         <span class="preview-pill">Presencial</span>
       </div>
-      <div class="preview-location">📍 Buenos Aires, Argentina</div>
+      <div class="preview-location">\u{1F4CD} Buenos Aires, Argentina</div>
       <div class="preview-footer">
         <span class="preview-fecha">${formatearFechaRelativa(b.FechaCreacion)}</span>
         <button class="btn-ver-mas" data-id="${b.ID}" data-puesto="${escapeHtmlLocal(b.Puesto)}" data-area="${escapeHtmlLocal(b.Area || '')}" type="button">Ver más</button>
@@ -1159,7 +1159,7 @@ function mostrarVistaConocenos() {
   grid.innerHTML = MARCAS.map((m, i) => `
     <div class="marca-card-visual" data-idx="${i}">
       <img class="marca-logo-plano" src="${m.imagen}" alt="${escapeHtmlLocal(m.nombre)}">
-      <div class="marca-chevron">▾</div>
+      <div class="marca-chevron">\u25BE</div>
     </div>
   `).join('');
   grid.querySelectorAll('.marca-card-visual').forEach(card => {
