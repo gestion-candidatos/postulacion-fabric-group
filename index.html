@@ -806,6 +806,14 @@ document.getElementById('btnContinuar').addEventListener('click', () => {
   candidato = { Nombre: nombre, Apellido: apellido, Email: (datosGoogle && datosGoogle.email) || '', Telefono: telefono };
   document.getElementById('sidebarUserName').textContent = nombre + ' ' + apellido;
 
+  if (forzarModoCandidato) {
+    forzarModoCandidato = false;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    mostrarVistaConocenos();
+    return;
+  }
+
   if (esEmailAdminUX(candidato.Email)) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminGateScreen').style.display = 'flex';
@@ -838,10 +846,33 @@ document.getElementById('btnEntrarPanelInterno').addEventListener('click', () =>
 });
 
 
+/**
+ * Se usa antes de entrar como candidato desde las pantallas de Admin/Gerente:
+ * si Google no proveyó nombre y apellido completos (pasa con algunas cuentas
+ * de Workspace), en vez de saltar directo a la app se muestra el paso de
+ * "confirmar tus datos" para que la persona los complete a mano — si no,
+ * cualquier postulación de prueba fallaría por "faltan datos obligatorios".
+ */
+let forzarModoCandidato = false;
+
+function entrarComoCandidatoOConfirmarDatos() {
+  if (candidato && candidato.Nombre && candidato.Apellido) {
+    document.getElementById('appScreen').style.display = 'block';
+    mostrarVistaConocenos();
+    return;
+  }
+  forzarModoCandidato = true;
+  document.getElementById('loginNombre').value = (candidato && candidato.Nombre) || '';
+  document.getElementById('loginApellido').value = (candidato && candidato.Apellido) || '';
+  document.getElementById('confirmarEmailChip').textContent = (candidato && candidato.Email) || '';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('googleLoginWrap').style.display = 'none';
+  document.getElementById('confirmarDatosWrap').style.display = 'block';
+}
+
 document.getElementById('btnVerComoCandidatoDesdeGate').addEventListener('click', () => {
   document.getElementById('adminGateScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display = 'block';
-  mostrarVistaConocenos();
+  entrarComoCandidatoOConfirmarDatos();
 });
 
 document.getElementById('btnVerMisCandidatosGate').addEventListener('click', () => {
@@ -857,8 +888,7 @@ document.getElementById('btnVerMisCandidatosGate').addEventListener('click', () 
 
 document.getElementById('btnVerComoCandidatoDesdeGerenteGate').addEventListener('click', () => {
   document.getElementById('gerenteGateScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display = 'block';
-  mostrarVistaConocenos();
+  entrarComoCandidatoOConfirmarDatos();
 });
 
 document.getElementById('btnCambiarDatos').addEventListener('click', () => {
