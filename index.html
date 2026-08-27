@@ -847,7 +847,11 @@ document.getElementById('btnContinuar').addEventListener('click', () => {
     return;
   }
 
-  candidato = { Nombre: nombre, Apellido: apellido, Email: (datosGoogle && datosGoogle.email) || '', Telefono: telefono };
+  // Si ya había un mail cargado (por ejemplo, viniendo del modo "Candidato"
+  // del panel interno, que no pasa por un login real de Google), se
+  // respeta ese mail en vez de pisarlo con uno vacío.
+  const emailPrevio = (candidato && candidato.Email) || '';
+  candidato = { Nombre: nombre, Apellido: apellido, Email: (datosGoogle && datosGoogle.email) || emailPrevio, Telefono: telefono };
   document.getElementById('sidebarUserName').textContent = nombre + ' ' + apellido;
 
   if (forzarModoCandidato) {
