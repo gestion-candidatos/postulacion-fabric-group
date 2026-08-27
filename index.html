@@ -738,7 +738,9 @@ async function apiPost(payload, onProgreso) {
     Apellido: payload.data.Apellido,
     Email: payload.data.Email,
     Telefono: payload.data.Telefono,
-    Mensaje: payload.data.Mensaje
+    Mensaje: payload.data.Mensaje,
+    ReferentePorNombre: payload.data.ReferentePorNombre,
+    ReferentePorEmail: payload.data.ReferentePorEmail
   });
 
   const resultado = await apiGet('finalizarPostulacion', {
