@@ -1606,7 +1606,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   // de una cuenta de Google real ni de enviar ninguna postulación.
   const paramsUrl = new URLSearchParams(window.location.search);
   if (paramsUrl.get('preview')) {
-    candidato = { Nombre: 'Vista previa', Apellido: '', Email: '', Telefono: '' };
+    // Si el panel interno mandó el mail real del admin (para que esta
+    // vista previa muestre las mismas secciones que vería esa persona si
+    // entrara por su cuenta, como "Referí a alguien"), se usa ese mail.
+    const previewEmail = paramsUrl.get('previewEmail') || '';
+    candidato = { Nombre: 'Vista previa', Apellido: '', Email: previewEmail, Telefono: '' };
     document.getElementById('sidebarUserName').textContent = 'Vista previa';
     entrarComoCandidatoOConfirmarDatos();
     return;
