@@ -1616,8 +1616,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     // vista previa muestre las mismas secciones que vería esa persona si
     // entrara por su cuenta, como "Referí a alguien"), se usa ese mail.
     const previewEmail = paramsUrl.get('previewEmail') || '';
-    candidato = { Nombre: 'Vista previa', Apellido: '', Email: previewEmail, Telefono: '' };
-    document.getElementById('sidebarUserName').textContent = 'Vista previa';
+    candidato = { Nombre: '', Apellido: '', Email: previewEmail, Telefono: '' };
     entrarComoCandidatoOConfirmarDatos();
     return;
   }
