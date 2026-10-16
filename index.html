@@ -72,6 +72,8 @@
   }
   .file-drop:hover { border-color: var(--accent); color: var(--accent); }
   .file-drop.has-file { border-color: var(--green); color: var(--green); border-style: solid; background: var(--green-bg); }
+  .foto-preview { display: none; width: 110px; height: 110px; object-fit: cover; border-radius: 10px; margin-top: 10px; border: 1px solid var(--gray-200); }
+  .field-ayuda { font-size: 12px; color: var(--gray-400); margin-top: 6px; line-height: 1.4; }
   input[type=file] {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
     clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -501,6 +503,13 @@
               <label class="file-drop" id="fileDropZone" for="cvFile">Tocá para seleccionar tu CV en PDF</label>
               <input type="file" id="cvFile" accept="application/pdf,.pdf">
             </div>
+            <div class="field">
+              <label>Cargá tu foto 4x4 *</label>
+              <label class="file-drop" id="fileDropZoneFoto" for="fotoFile">Tocá para seleccionar tu foto 4x4</label>
+              <input type="file" id="fotoFile" accept="image/*">
+              <div class="field-ayuda">Foto tipo carnet: de frente, con fondo claro y buena luz. Se recorta en formato cuadrado.</div>
+              <img id="fotoPreview" class="foto-preview" alt="Vista previa de tu foto">
+            </div>
             <button class="btn-primary" id="btnSubmit" style="width:100%;">Enviar postulación</button>
           </div>
         </div>
@@ -590,7 +599,7 @@ const GOOGLE_CLIENT_ID = '880796146723-s99rdfn9r1rai570514og7edivktp4cq.apps.goo
 // URL de la Web App del panel interno (Apps Script — Code.gs / Index.html).
 // Reemplazá este placeholder por la URL real (Implementar -> Administrar
 // implementaciones -> copiar la URL de la Web App del panel interno).
-const PANEL_INTERNO_URL = 'https://script.google.com/a/macros/grupo-fabric.com/s/AKfycbyp8rBtOjG-kEXP8DJkdB-QQcoCQEvtZBUSAOfUZdGvfZuJ5oZSxk4wLyUuhXnbsLck/exec';
+const PANEL_INTERNO_URL = 'PEGAR_AQUI_LA_URL_DEL_PANEL_INTERNO';
 
 // Esta lista es SOLO para decidir qué pantalla mostrar (UX) — no es una
 // verificación de seguridad real. La verificación real de quién es admin
@@ -625,6 +634,7 @@ let vistaActual = 'busquedas';
 let busquedaSeleccionada = null; // { ID, Puesto, Area } o null si es carga general de CV
 let detalleActual = '';
 let pendingCVBase64 = null, pendingCVFileName = null, pendingCVMime = null;
+let pendingFotoBase64 = null, pendingFotoFileName = null, pendingFotoMime = null;
 
 /**
  * Pide datos al backend usando JSONP (una etiqueta <script> normal, no
@@ -731,6 +741,13 @@ async function subirArchivoPorPartes(submissionId, base64Data, onProgreso) {
 async function apiPost(payload, onProgreso) {
   const submissionId = generarIdUnico();
 
+  // La foto (si viene) se sube primero: es chica y así el porcentaje que ve
+  // la persona refleja la subida del CV. Viaja con su propio identificador.
+  let totalChunksFoto = 0;
+  if (payload.fotoBase64) {
+    totalChunksFoto = await subirArchivoPorPartes(submissionId + '_foto', payload.fotoBase64, null);
+  }
+
   const totalChunks = await subirArchivoPorPartes(submissionId, payload.base64Data, onProgreso);
 
   const datosJson = JSON.stringify({
@@ -746,6 +763,9 @@ async function apiPost(payload, onProgreso) {
   const resultado = await apiGet('finalizarPostulacion', {
     submissionId: submissionId,
     totalChunks: totalChunks,
+    totalChunksFoto: totalChunksFoto,
+    fotoFileName: payload.fotoFileName || 'foto.jpg',
+    fotoMimeType: payload.fotoMimeType || 'image/jpeg',
     busquedaId: payload.busquedaId || '',
     fileName: payload.fileName || 'CV.pdf',
     mimeType: payload.mimeType || 'application/pdf',
@@ -1306,6 +1326,13 @@ async function mostrarVistaFormulario(busqueda) {
   document.getElementById('fileDropZone').classList.remove('has-file');
   pendingCVBase64 = null; pendingCVFileName = null; pendingCVMime = null;
 
+  document.getElementById('fotoFile').value = '';
+  document.getElementById('fileDropZoneFoto').textContent = 'Tocá para seleccionar tu foto 4x4';
+  document.getElementById('fileDropZoneFoto').classList.remove('has-file');
+  document.getElementById('fotoPreview').style.display = 'none';
+  document.getElementById('fotoPreview').removeAttribute('src');
+  pendingFotoBase64 = null; pendingFotoFileName = null; pendingFotoMime = null;
+
   const campoPuesto = document.getElementById('fieldPuestoDeseado');
   document.getElementById('selectPuestoDeseado').value = '';
   document.getElementById('inputPuestoOtro').style.display = 'none';
@@ -1533,6 +1560,61 @@ document.getElementById('cvFile').addEventListener('change', function () {
   reader.readAsDataURL(file);
 });
 
+// La foto se recorta al centro en formato cuadrado (4x4) y se achica a 480x480
+// ANTES de enviarla: una foto de celular pesa varios MB y tardaría una
+// eternidad en subirse; ya achicada pesa unas decenas de KB.
+document.getElementById('fotoFile').addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  const zone = document.getElementById('fileDropZoneFoto');
+  const preview = document.getElementById('fotoPreview');
+  const errorEl = document.getElementById('formError');
+  errorEl.style.display = 'none';
+
+  if (!file.type || file.type.indexOf('image/') !== 0) {
+    errorEl.textContent = 'El archivo elegido no es una imagen. Elegí una foto en JPG o PNG.';
+    errorEl.style.display = 'block';
+    this.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onerror = () => {
+    errorEl.textContent = 'No pudimos leer la foto. Probá con otra.';
+    errorEl.style.display = 'block';
+  };
+  reader.onload = () => {
+    const img = new Image();
+    img.onerror = () => {
+      errorEl.textContent = 'No pudimos abrir esa imagen. Probá con otra foto (JPG o PNG).';
+      errorEl.style.display = 'block';
+    };
+    img.onload = () => {
+      const LADO = 480;
+      const canvas = document.createElement('canvas');
+      canvas.width = LADO;
+      canvas.height = LADO;
+      const ctx = canvas.getContext('2d');
+      const lado = Math.min(img.width, img.height);
+      const sx = (img.width - lado) / 2;
+      const sy = (img.height - lado) / 2;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, LADO, LADO);
+      ctx.drawImage(img, sx, sy, lado, lado, 0, 0, LADO, LADO);
+
+      pendingFotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+      pendingFotoFileName = 'foto.jpg';
+      pendingFotoMime = 'image/jpeg';
+      preview.src = pendingFotoBase64;
+      preview.style.display = 'block';
+      zone.textContent = 'Listo: foto cargada (podés tocar para cambiarla)';
+      zone.classList.add('has-file');
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
 document.getElementById('btnSubmit').addEventListener('click', async () => {
   const errorEl = document.getElementById('formError');
   errorEl.style.display = 'none';
@@ -1563,6 +1645,12 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
     return;
   }
 
+  if (!pendingFotoBase64) {
+    errorEl.textContent = 'Adjuntá tu foto 4x4 antes de enviar.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
   const btn = document.getElementById('btnSubmit');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Enviando...';
@@ -1576,7 +1664,10 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
       data: Object.assign({}, candidato, datosExtra),
       base64Data: pendingCVBase64,
       fileName: pendingCVFileName,
-      mimeType: pendingCVMime
+      mimeType: pendingCVMime,
+      fotoBase64: pendingFotoBase64,
+      fotoFileName: pendingFotoFileName,
+      fotoMimeType: pendingFotoMime
     }, (hechos, total) => {
       const porcentaje = Math.round((hechos / total) * 100);
       btn.innerHTML = '<span class="spinner"></span> Subiendo tu CV... ' + porcentaje + '%';
